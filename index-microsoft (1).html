@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Everhome Capital - Expense Request Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;600;700&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a5f3a;
+            --primary-light: #2d8659;
+            --accent: #d4a574;
+            --text-dark: #1e1e1e;
+            --text-medium: #4a4a4a;
+            --text-light: #7a7a7a;
+            --bg-cream: #f5faf7;
+            --border: #d4d4d4;
+            --input-bg: #ffffff;
+            --success: #2a7f62;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Archivo', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5faf7 0%, #e8f5ed 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 8px 40px rgba(26, 95, 58, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 40px 50px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-divider {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .form-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            position: relative;
+            letter-spacing: 0.3px;
+        }
+        
+        .form-content {
+            padding: 50px;
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+            animation: slideIn 0.5s ease-out backwards;
+        }
+        
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.2s; }
+        .form-section:nth-child(3) { animation-delay: 0.3s; }
+        .form-section:nth-child(4) { animation-delay: 0.4s; }
+        .form-section:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+        
+        .table-controls {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .add-row-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(26, 95, 58, 0.2);
+        }
+        
+        .add-row-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 95, 58, 0.3);
+        }
+        
+        .delete-row-btn {
+            padding: 6px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .delete-row-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+        
+        .delete-row-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .delete-row-btn:disabled:hover {
+            transform: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+        
+        label.required::after {
+            content: ' *';
+            color: var(--accent);
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Archivo', sans-serif;
+            background: var(--input-bg);
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+        
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a5f3a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 95, 58, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--input-bg);
+        }
+        
+        .radio-option:hover {
+            border-color: var(--primary-light);
+            background: var(--bg-cream);
+            transform: translateX(3px);
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: 400;
+            flex: 1;
+        }
+        
+        .expense-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .expense-table thead th {
+            background: var(--primary);
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        .expense-table thead th:first-child {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .expense-table thead th:last-child {
+            width: 80px;
+            text-align: center;
+        }
+        
+        .expense-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s ease;
+        }
+        
+        .expense-table tbody tr:hover {
+            background: var(--bg-cream);
+        }
+        
+        .expense-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .expense-table td {
+            padding: 12px;
+        }
+        
+        .expense-table td:first-child {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-medium);
+            background: var(--bg-cream);
+        }
+        
+        .expense-table td:last-child {
+            text-align: center;
+        }
+        
+        .expense-table input[type="date"],
+        .expense-table input[type="text"],
+        .expense-table input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        
+        .expense-table .file-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            background: var(--input-bg);
+            transition: all 0.3s ease;
+        }
+        
+        .expense-table .file-input:hover {
+            border-color: var(--primary);
+        }
+        
+        .expense-table .file-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 95, 58, 0.1);
+        }
+        
+        .expense-table .file-name {
+            display: block;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .totals-section {
+            background: linear-gradient(135deg, #f0f9f4 0%, #fdfffe 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 2px solid var(--border);
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed var(--border);
+        }
+        
+        .total-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .total-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .total-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Crimson Pro', serif;
+        }
+        
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            padding: 18px 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 95, 58, 0.3);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(26, 95, 58, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .success-message {
+            display: none;
+            padding: 25px;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: var(--success);
+            border-radius: 8px;
+            margin-top: 25px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid var(--success);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .form-content {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .expense-table {
+                font-size: 13px;
+            }
+            
+            .expense-table thead th,
+            .expense-table td {
+                padding: 10px 8px;
+            }
+            
+            .totals-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏠 Everhome Capital</div>
+            <div class="header-divider"></div>
+            <div class="form-title">Expense Request Form</div>
+        </div>
+        
+        <form id="expenseForm" class="form-content">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="formNumber" class="required">Form Number</label>
+                        <input type="text" id="formNumber" name="formNumber" placeholder="e.g., TL20251231EC" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyName" class="required">Company</label>
+                        <select id="companyName" name="companyName" required>
+                            <option value="">Please select a company</option>
+                            <option value="Everhome Capital">Everhome Capital</option>
+                            <option value="Everhome Properties">Everhome Properties</option>
+                            <option value="Everhome Investments">Everhome Investments</option>
+                            <option value="Everhome Management">Everhome Management</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="employeeName" class="required">Name</label>
+                        <input type="text" id="employeeName" name="employeeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="requestDate" class="required">Date</label>
+                        <input type="date" id="requestDate" name="requestDate" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Type -->
+            <div class="form-section">
+                <div class="section-title">Payment Type</div>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="debit" name="paymentType" value="Debit Card" required>
+                        <label for="debit">Debit Card</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="credit" name="paymentType" value="Credit Card">
+                        <label for="credit">Credit Card</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reimbursement Method -->
+            <div class="form-section">
+                <div class="section-title">Reimbursement Method</div>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="directDeposit" name="reimbursementMethod" value="Direct deposit" required checked>
+                        <label for="directDeposit">Direct deposit</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Expense Items -->
+            <div class="form-section">
+                <div class="section-title">Expense Items</div>
+                <div class="table-controls">
+                    <button type="button" class="add-row-btn" id="addRowBtn">+ Add Item</button>
+                </div>
+                <table class="expense-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Reason for Expenditure</th>
+                            <th>Amount</th>
+                            <th>Receipt</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenseTableBody">
+                        <tr data-row-number="1">
+                            <td class="row-number">1</td>
+                            <td><input type="date" name="expenseDate[]"></td>
+                            <td><input type="text" name="expenseReason[]" placeholder="Enter reason for expenditure"></td>
+                            <td><input type="number" name="expenseAmount[]" step="0.01" placeholder="0.00" class="amount-input"></td>
+                            <td>
+                                <input type="file" name="expenseReceipt[]" accept="image/jpeg,image/jpg" class="file-input">
+                                <span class="file-name"></span>
+                            </td>
+                            <td><button type="button" class="delete-row-btn" title="Delete row">🗑️</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Totals -->
+            <div class="form-section">
+                <div class="totals-section">
+                    <div class="total-row">
+                        <div class="total-label">Total:</div>
+                        <div class="total-value" id="totalAmount">$0.00</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </div>
+            
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message">
+                ✓ Expense Request Submitted Successfully!
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        let rowCounter = 1;
+        
+        // Function to update row numbers
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#expenseTableBody tr');
+            rows.forEach((row, index) => {
+                row.setAttribute('data-row-number', index + 1);
+                row.querySelector('.row-number').textContent = index + 1;
+            });
+            
+            updateDeleteButtons();
+        }
+        
+        // Function to update delete button states
+        function updateDeleteButtons() {
+            const rows = document.querySelectorAll('#expenseTableBody tr');
+            const deleteButtons = document.querySelectorAll('.delete-row-btn');
+            
+            deleteButtons.forEach(btn => {
+                btn.disabled = rows.length <= 1;
+            });
+        }
+        
+        // Function to add new row
+        function addNewRow() {
+            rowCounter++;
+            const tbody = document.getElementById('expenseTableBody');
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-row-number', rowCounter);
+            newRow.innerHTML = `
+                <td class="row-number">${rowCounter}</td>
+                <td><input type="date" name="expenseDate[]"></td>
+                <td><input type="text" name="expenseReason[]" placeholder="Enter reason for expenditure"></td>
+                <td><input type="number" name="expenseAmount[]" step="0.01" placeholder="0.00" class="amount-input"></td>
+                <td>
+                    <input type="file" name="expenseReceipt[]" accept="image/jpeg,image/jpg" class="file-input">
+                    <span class="file-name"></span>
+                </td>
+                <td><button type="button" class="delete-row-btn" title="Delete row">🗑️</button></td>
+            `;
+            
+            tbody.appendChild(newRow);
+            
+            const amountInput = newRow.querySelector('.amount-input');
+            amountInput.addEventListener('input', calculateTotal);
+            
+            const fileInput = newRow.querySelector('.file-input');
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            const deleteBtn = newRow.querySelector('.delete-row-btn');
+            deleteBtn.addEventListener('click', function() {
+                deleteRow(newRow);
+            });
+            
+            updateRowNumbers();
+            newRow.style.animation = 'slideIn 0.3s ease-out';
+        }
+        
+        // Function to delete row
+        function deleteRow(row) {
+            const rows = document.querySelectorAll('#expenseTableBody tr');
+            if (rows.length > 1) {
+                row.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    row.remove();
+                    updateRowNumbers();
+                    calculateTotal();
+                }, 300);
+            }
+        }
+        
+        document.getElementById('addRowBtn').addEventListener('click', addNewRow);
+        
+        document.querySelectorAll('.delete-row-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                deleteRow(row);
+            });
+        });
+        
+        // Calculate total amount
+        function calculateTotal() {
+            const amountInputs = document.querySelectorAll('.amount-input');
+            let total = 0;
+            
+            amountInputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                total += value;
+            });
+            
+            document.getElementById('totalAmount').textContent = '$' + total.toFixed(2);
+        }
+        
+        // Handle file upload display
+        function handleFileUpload(e) {
+            const fileName = this.files[0]?.name || '';
+            const fileNameSpan = this.parentElement.querySelector('.file-name');
+            if (fileName) {
+                fileNameSpan.textContent = '📎 ' + fileName;
+                fileNameSpan.style.color = 'var(--success)';
+            } else {
+                fileNameSpan.textContent = '';
+            }
+        }
+        
+        // Function to initialize event listeners
+        function initializeEventListeners() {
+            document.querySelectorAll('.amount-input').forEach(input => {
+                input.addEventListener('input', calculateTotal);
+            });
+            
+            document.querySelectorAll('.file-input').forEach(input => {
+                input.addEventListener('change', handleFileUpload);
+            });
+            
+            document.querySelectorAll('.delete-row-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    deleteRow(row);
+                });
+            });
+            
+            updateDeleteButtons();
+        }
+        
+        // Helper function to convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+        
+        // Handle form submission to Power Automate
+        document.getElementById('expenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate at least one expense item
+            const amountInputs = document.querySelectorAll('.amount-input');
+            let hasExpense = false;
+            
+            amountInputs.forEach(input => {
+                if (parseFloat(input.value) > 0) {
+                    hasExpense = true;
+                }
+            });
+            
+            if (!hasExpense) {
+                alert('Please enter at least one expense item!');
+                return;
+            }
+            
+            // Disable submit button
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            try {
+                const formData = new FormData(this);
+                
+                // Prepare expense items array
+                const expenseItems = [];
+                const dates = formData.getAll('expenseDate[]');
+                const reasons = formData.getAll('expenseReason[]');
+                const amounts = formData.getAll('expenseAmount[]');
+                const receipts = formData.getAll('expenseReceipt[]');
+                
+                for (let i = 0; i < dates.length; i++) {
+                    if (amounts[i] && parseFloat(amounts[i]) > 0) {
+                        const item = {
+                            itemNumber: i + 1,
+                            date: dates[i],
+                            reason: reasons[i],
+                            amount: parseFloat(amounts[i]).toFixed(2),
+                            hasReceipt: receipts[i] && receipts[i].name ? true : false
+                        };
+                        
+                        // Convert receipt to base64 if exists
+                        if (receipts[i] && receipts[i].name) {
+                            item.receiptFileName = receipts[i].name;
+                            item.receiptData = await fileToBase64(receipts[i]);
+                        }
+                        
+                        expenseItems.push(item);
+                    }
+                }
+                
+                // Prepare data for Power Automate
+                const data = {
+                    formNumber: formData.get('formNumber'),
+                    companyName: formData.get('companyName'),
+                    employeeName: formData.get('employeeName'),
+                    requestDate: formData.get('requestDate'),
+                    paymentType: formData.get('paymentType'),
+                    reimbursementMethod: formData.get('reimbursementMethod'),
+                    totalAmount: document.getElementById('totalAmount').textContent,
+                    expenseItems: expenseItems,
+                    submissionTime: new Date().toISOString()
+                };
+                
+                console.log('Submitting to Power Automate:', data);
+                
+                // TODO: Replace with your Power Automate Flow HTTP endpoint
+                const powerAutomateUrl = 'YOUR_POWER_AUTOMATE_FLOW_URL_HERE';
+                
+                // Submit to Power Automate
+                const response = await fetch(powerAutomateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('successMessage').classList.add('show');
+                    document.getElementById('successMessage').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    
+                    setTimeout(() => {
+                        document.getElementById('successMessage').classList.remove('show');
+                    }, 5000);
+                    
+                    // Reset form
+                    setTimeout(() => {
+                        this.reset();
+                        const tbody = document.getElementById('expenseTableBody');
+                        tbody.innerHTML = `
+                            <tr data-row-number="1">
+                                <td class="row-number">1</td>
+                                <td><input type="date" name="expenseDate[]"></td>
+                                <td><input type="text" name="expenseReason[]" placeholder="Enter reason for expenditure"></td>
+                                <td><input type="number" name="expenseAmount[]" step="0.01" placeholder="0.00" class="amount-input"></td>
+                                <td>
+                                    <input type="file" name="expenseReceipt[]" accept="image/jpeg,image/jpg" class="file-input">
+                                    <span class="file-name"></span>
+                                </td>
+                                <td><button type="button" class="delete-row-btn" title="Delete row">🗑️</button></td>
+                            </tr>
+                        `;
+                        rowCounter = 1;
+                        initializeEventListeners();
+                        calculateTotal();
+                    }, 2000);
+                } else {
+                    throw new Error('Submission failed');
+                }
+                
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Error submitting form. Please try again or contact IT support.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Request';
+            }
+        });
+        
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('requestDate').value = today;
+        
+        // Initialize
+        initializeEventListeners();
+    </script>
+</body>
+</html>
